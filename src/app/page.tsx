@@ -4,13 +4,14 @@
 
 import { useProducts } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ui/ProductCard";
-import Container from "@/components/layout/Container";
+// import Container from "@/components/layout/Container";
+import MainLayout from "@/components/layout/MainLayout";
 
 export default function Home() {
   const { products, loading, error, total } = useProducts(12);
 
   return (
-    <Container>
+    <MainLayout>
 
       {/* Hero Section */}
       <section className="py-12 text-center">
@@ -68,6 +69,6 @@ export default function Home() {
           </div>
         )}
       </section>
-    </Container>
+    </MainLayout>
   );
 }
