@@ -78,7 +78,7 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
       {/* Add to Cart Button */}
       <button
         onClick={handleAdd}
-        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+        className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-200 cursor-pointer ${
           isAdded
             ? "bg-green-500 text-white"
             : "bg-primary text-white hover:bg-primary-hover"
