@@ -76,32 +76,32 @@ export const productService = {
 
   /* ===== GET ALL CATEGORIES ===== */
   getAllCategories: async () => {
-    const res = await fetch(`${API_BASE}/products/categories`);
-    if (!res.ok) throw new Error("Failed to fetch categories");
-    return res.json();
-  },
+  const res = await fetch(`${API_BASE}/products/categories`);
+  if (!res.ok) throw new Error("Failed to fetch categories");
+  return res.json();
+},
 
   /* ===== GET PRODUCTS BY CATEGORY ===== */
   getProductsByCategory: async (category: string) => {
-    const res = await fetch(`${API_BASE}/products/category/${encodeURIComponent(category)}`);
-    if (!res.ok) throw new Error(`Failed to fetch ${category} products`);
-    const data = await res.json();
+  const res = await fetch(`${API_BASE}/products/category/${encodeURIComponent(category)}`);
+  if (!res.ok) throw new Error(`Failed to fetch ${category} products`);
+  const data = await res.json();
     
     // Transform data to match Product type
-    data.products = data.products.map((p: any) => ({
-      id: p.id,
-      title: p.title,
-      price: p.price,
-      description: p.description,
-      category: p.category,
-      images: p.images,
-      thumbnail: p.thumbnail,
-      rating: {
-        rate: p.rating,
-        count: p.stock
-      }
-    }));
-    
-    return data;
-  },
+   data.products = data.products.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    price: p.price,
+    description: p.description,
+    category: p.category,
+    images: p.images,
+    thumbnail: p.thumbnail,
+    rating: {
+      rate: p.rating,
+      count: p.stock
+    }
+  }));
+  
+  return data;
+},
 };
