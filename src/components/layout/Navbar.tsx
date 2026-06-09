@@ -1,4 +1,4 @@
-// Role: Main navigation bar with cart badge, dark mode toggle, and responsive links
+// Role: Main navigation bar with cart badge, dark mode toggle, search bar, and responsive links
 
 "use client";
 
@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ShoppingCart, Sun, Moon } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { useThemeStore } from "@/stores/theme-store";
+import { SearchBar } from "@/components/ui/SearchBar";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
@@ -15,13 +16,13 @@ export default function Navbar() {
   const totalItems = getTotalItems();
   const { theme, toggleTheme, initTheme } = useThemeStore();
 
-  // Initialize theme on client only
+  /* ===== INITIALIZE THEME ON CLIENT ONLY ===== */
   useEffect(() => {
     initTheme();
     setMounted(true);
   }, [initTheme]);
 
-  // Don't render theme-dependent UI until mounted (prevents hydration mismatch)
+  /* ===== SIMPLE NAVBAR DURING HYDRATION ===== */
   if (!mounted) {
     return (
       <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
@@ -37,31 +38,41 @@ export default function Navbar() {
     );
   }
 
-  // Full navbar with theme toggle (only shown after client mount)
+  /* ===== FULL NAVBAR AFTER MOUNT ===== */
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           
-          <Link href="/" className="flex items-center space-x-2">
+          {/* Logo / Brand */}
+          <Link href="/" className="flex items-center space-x-2 cursor-pointer">
             <span className="text-2xl font-bold text-primary">Flux</span>
             <span className="text-2xl font-bold text-gray-900 dark:text-white">Cart</span>
           </Link>
 
+          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+            <Link href="/" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
               Home
             </Link>
-            <Link href="/products" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+            <Link href="/products" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
               Products
             </Link>
-            <Link href="/cart" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors">
+            <Link href="/cart" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
               Cart
             </Link>
           </div>
 
+          {/* Search Bar - Desktop */}
+          <div className="hidden md:block">
+            <SearchBar />
+          </div>
+
+          {/* Right Side: Cart + Dark Mode Toggle */}
           <div className="flex items-center space-x-4">
-            <Link href="/cart" className="relative">
+            
+            {/* Cart Icon with Badge */}
+            <Link href="/cart" className="relative cursor-pointer">
               <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-primary hover:text-white transition-colors group">
                 <ShoppingCart className="w-5 h-5 text-gray-700 dark:text-gray-200 group-hover:text-white" />
               </div>
@@ -72,9 +83,10 @@ export default function Navbar() {
               )}
             </Link>
 
+            {/* Dark Mode Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
               aria-label="Toggle dark mode"
             >
               {theme === "dark" ? (
