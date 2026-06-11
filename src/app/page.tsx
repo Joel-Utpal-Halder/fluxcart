@@ -1,4 +1,4 @@
-// Role: Homepage displaying product grid with category filtering
+// Role: Homepage displaying product grid with category filtering and sorting
 
 "use client";
 
@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { CategoryFilter } from "@/components/ui/CategoryFilter";
+import { SortingDropdown, sortOptions, type SortOption } from "@/components/ui/SortingDropdown";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
@@ -15,13 +16,13 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
   const [categoryLoading, setCategoryLoading] = useState(false);
+  const [currentSort, setCurrentSort] = useState<SortOption>(sortOptions[0]);
   
   // Fetch all products (used when no category selected)
-  const { products, loading, error, total } = useProducts(12);
+  const { products, loading, error, total } = useProducts(100); // Fetch more for sorting
 
   /* ===== FETCH PRODUCTS WHEN CATEGORY CHANGES ===== */
   useEffect(() => {
-    // Action: Fetch products by category when selectedCategory changes
     const fetchCategoryProducts = async () => {
       if (selectedCategory) {
         setCategoryLoading(true);
@@ -41,8 +42,16 @@ export default function Home() {
   }, [selectedCategory]);
 
   /* ===== DETERMINE WHICH PRODUCTS TO DISPLAY ===== */
-  const displayProducts = selectedCategory ? categoryProducts : products;
+  let displayProducts = selectedCategory ? categoryProducts : products;
   const isLoading = selectedCategory ? categoryLoading : loading;
+
+  /* ===== APPLY SORTING TO DISPLAY PRODUCTS ===== */
+  const sortedProducts = [...displayProducts].sort(currentSort.sortFn);
+
+  /* ===== HANDLE SORT CHANGE ===== */
+  const handleSortChange = (option: SortOption) => {
+    setCurrentSort(option);
+  };
 
   return (
     <Container>
@@ -70,14 +79,19 @@ export default function Home() {
 
           {/* Main Content: Products Grid */}
           <div className="flex-1">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+            {/* Header with Sorting */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {selectedCategory ? `${selectedCategory}` : "Featured Products"}
               </h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {displayProducts.length} products
-              </span>
+              
+              {/* Sorting Dropdown */}
+              <SortingDropdown onSort={handleSortChange} currentSort={currentSort} />
+            </div>
+
+            {/* Products Count */}
+            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Showing {sortedProducts.length} products
             </div>
 
             {/* Loading State */}
@@ -109,7 +123,7 @@ export default function Home() {
             {/* Products Grid */}
             {!isLoading && !error && (
               <>
-                {displayProducts.length === 0 ? (
+                {sortedProducts.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-gray-500 dark:text-gray-400">
                       No products found in this category.
@@ -117,7 +131,7 @@ export default function Home() {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {displayProducts.map((product) => (
+                    {sortedProducts.map((product) => (
                       <ProductCard key={product.id} product={product} />
                     ))}
                   </div>
