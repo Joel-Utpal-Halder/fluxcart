@@ -1,19 +1,26 @@
-// Role: Main navigation bar with cart badge, dark mode toggle, search bar, and responsive links
+// Role: Main navigation bar with cart badge, wishlist badge, dark mode toggle, search bar, and responsive links
 
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Sun, Moon } from "lucide-react";
+import { ShoppingCart, Sun, Moon, Heart } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
+import { useWishlistStore } from "@/stores/wishlist-store";
 import { useThemeStore } from "@/stores/theme-store";
 import { SearchBar } from "@/components/ui/SearchBar";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   
+  /* ===== CART STORE ===== */
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const totalItems = getTotalItems();
+  
+  /* ===== WISHLIST STORE ===== */
+  const wishlistCount = useWishlistStore((state) => state.getTotalItems());
+  
+  /* ===== THEME STORE ===== */
   const { theme, toggleTheme, initTheme } = useThemeStore();
 
   /* ===== INITIALIZE THEME ON CLIENT ONLY ===== */
@@ -58,6 +65,9 @@ export default function Navbar() {
             <Link href="/products" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
               Products
             </Link>
+            <Link href="/wishlist" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
+              Wishlist
+            </Link>
             <Link href="/cart" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
               Cart
             </Link>
@@ -68,9 +78,21 @@ export default function Navbar() {
             <SearchBar />
           </div>
 
-          {/* Right Side: Cart + Dark Mode Toggle */}
+          {/* Right Side: Wishlist + Cart + Dark Mode Toggle */}
           <div className="flex items-center space-x-4">
             
+            {/* Wishlist Icon with Badge */}
+            <Link href="/wishlist" className="relative cursor-pointer">
+              <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-primary hover:text-white transition-colors group">
+                <Heart className="w-5 h-5 text-gray-700 dark:text-gray-200 group-hover:text-white" />
+              </div>
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+
             {/* Cart Icon with Badge */}
             <Link href="/cart" className="relative cursor-pointer">
               <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-primary hover:text-white transition-colors group">

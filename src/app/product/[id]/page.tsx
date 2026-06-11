@@ -1,13 +1,13 @@
-// File: src/app/product/[id]/page.tsx
-// Role: Display complete product details with image gallery, description, and quantity selection
+// Role: Display complete product details with image gallery, description, quantity selection, and wishlist
 
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Star, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Star, ShoppingBag, Heart } from "lucide-react";
 import { AddToCartButton } from "@/components/ui/AddToCartButton";
+import { useWishlistStore } from "@/stores/wishlist-store";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
@@ -19,6 +19,10 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  
+  /* ===== WISHLIST STORE ===== */
+  const { isInWishlist, toggleItem } = useWishlistStore();
+  const isWished = product ? isInWishlist(product.id) : false;
 
   /* ===== FETCH PRODUCT ON PAGE LOAD ===== */
   useEffect(() => {
@@ -51,14 +55,14 @@ export default function ProductDetailPage() {
         <div className="py-12">
           {/* Action: Show loading skeleton */}
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-8"></div>
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-sm w-32 mb-8"></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div className="h-96 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+              <div className="h-96 bg-gray-200 dark:bg-gray-700 rounded-sm"></div>
               <div className="space-y-4">
-                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-sm w-3/4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-sm w-1/2"></div>
+                <div className="h-24 bg-gray-200 dark:bg-gray-700 rounded-sm"></div>
+                <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-sm w-1/3"></div>
               </div>
             </div>
           </div>
@@ -75,7 +79,7 @@ export default function ProductDetailPage() {
           <p className="text-red-500 mb-4">{error || "Product not found"}</p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-sm hover:bg-primary-hover transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Home</span>
@@ -89,7 +93,7 @@ export default function ProductDetailPage() {
   return (
     <Container>
       <div className="py-8">
-        {/* Back Button - Added cursor-pointer */}
+        {/* Back Button */}
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors mb-6 cursor-pointer"
@@ -104,7 +108,7 @@ export default function ProductDetailPage() {
           {/* ===== LEFT COLUMN: IMAGE GALLERY ===== */}
           <div>
             {/* Main Image */}
-            <div className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden mb-4">
+            <div className="bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden mb-4">
               <img
                 src={selectedImage}
                 alt={product.title}
@@ -112,14 +116,14 @@ export default function ProductDetailPage() {
               />
             </div>
             
-            {/* Thumbnail Gallery - Added cursor-pointer to thumbnails */}
+            {/* Thumbnail Gallery */}
             {product.images && product.images.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(img)}
-                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${
+                    className={`w-20 h-20 rounded-sm overflow-hidden border-2 transition-colors cursor-pointer ${
                       selectedImage === img
                         ? "border-primary"
                         : "border-transparent hover:border-gray-300"
@@ -139,7 +143,7 @@ export default function ProductDetailPage() {
           {/* ===== RIGHT COLUMN: PRODUCT INFO ===== */}
           <div>
             {/* Category Badge */}
-            <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-full mb-4">
+            <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-sm mb-4">
               {product.category}
             </span>
 
@@ -184,9 +188,25 @@ export default function ProductDetailPage() {
               </p>
             </div>
 
-            {/* Add to Cart Section */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-6 cursor-pointer">
-              <AddToCartButton product={product} variant="full" />
+            {/* Action Buttons Section: Wishlist + Add to Cart */}
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                {/* Wishlist Button */}
+                <button
+                  onClick={() => toggleItem(product)}
+                  className={`flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 cursor-pointer ${
+                    isWished
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-red-500 hover:text-white"
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 ${isWished ? "fill-current" : ""}`} />
+                  <span>{isWished ? "Remove from Wishlist" : "Add to Wishlist"}</span>
+                </button>
+                
+                {/* Add to Cart Button */}
+                <AddToCartButton product={product} variant="full" />
+              </div>
             </div>
           </div>
         </div>
