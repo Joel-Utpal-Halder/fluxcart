@@ -14,11 +14,13 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   
   /* ===== CART STORE ===== */
-  const getTotalItems = useCartStore((state) => state.getTotalItems);
-  const totalItems = getTotalItems();
+  // FIX: Subscribe to items array directly to trigger re-renders
+  const cartItems = useCartStore((state) => state.items);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   
   /* ===== WISHLIST STORE ===== */
-  const wishlistCount = useWishlistStore((state) => state.getTotalItems());
+  const wishlistItems = useWishlistStore((state) => state.items);
+  const wishlistCount = wishlistItems.length;
   
   /* ===== THEME STORE ===== */
   const { theme, toggleTheme, initTheme } = useThemeStore();
@@ -88,7 +90,7 @@ export default function Navbar() {
               </div>
               {wishlistCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {wishlistCount}
+                  {wishlistCount > 99 ? "99+" : wishlistCount}
                 </span>
               )}
             </Link>
@@ -100,7 +102,7 @@ export default function Navbar() {
               </div>
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                  {totalItems}
+                  {totalItems > 99 ? "99+" : totalItems}
                 </span>
               )}
             </Link>
