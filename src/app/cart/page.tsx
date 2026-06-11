@@ -8,7 +8,8 @@ import { useCartStore } from "@/stores/cart-store";
 import Container from "@/components/layout/Container";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } = useCartStore();
+  const { items, updateQuantity, removeItem, clearCart, getTotalPrice } =
+    useCartStore();
   const totalPrice = getTotalPrice();
 
   /* ===== Empty Cart State ===== */
@@ -65,8 +66,11 @@ export default function CartPage() {
                 >
                   {/* Product Info */}
                   <div className="md:col-span-6 flex gap-4">
-                    {/* Product Image - Added cursor-pointer */}
-                    <Link href={`/product/${item.id}`} className="cursor-pointer">
+                    {/* Product Image */}
+                    <Link
+                      href={`/product/${item.id}`}
+                      className="cursor-pointer"
+                    >
                       <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-sm overflow-hidden flex-shrink-0">
                         <img
                           src={item.images?.[0] || item.thumbnail}
@@ -75,11 +79,14 @@ export default function CartPage() {
                         />
                       </div>
                     </Link>
-                    
+
                     {/* Product Details */}
                     <div>
-                      {/* Product Title - Added cursor-pointer to Link */}
-                      <Link href={`/product/${item.id}`} className="cursor-pointer">
+                      {/* Product Title */}
+                      <Link
+                        href={`/product/${item.id}`}
+                        className="cursor-pointer"
+                      >
                         <h3 className="font-semibold text-gray-900 dark:text-white hover:text-primary transition-colors line-clamp-2">
                           {item.title}
                         </h3>
@@ -87,7 +94,7 @@ export default function CartPage() {
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                         {item.category}
                       </p>
-                      {/* Remove button - already has cursor pointer from button element */}
+                      {/* Remove button */}
                       <button
                         onClick={() => removeItem(item.id)}
                         className="inline-flex items-center gap-1 text-sm text-red-500 hover:text-red-600 mt-2 transition-colors"
@@ -105,11 +112,13 @@ export default function CartPage() {
                     </span>
                   </div>
 
-                  {/* Quantity Controls - buttons already have cursor pointer */}
+                  {/* Quantity Controls */}
                   <div className="md:col-span-2 flex items-center justify-start md:justify-center">
                     <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity - 1)
+                        }
                         className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-lg transition-colors"
                         aria-label="Decrease quantity"
                       >
@@ -119,7 +128,9 @@ export default function CartPage() {
                         {item.quantity}
                       </span>
                       <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        onClick={() =>
+                          updateQuantity(item.id, item.quantity + 1)
+                        }
                         className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-lg transition-colors"
                         aria-label="Increase quantity"
                       >
@@ -137,7 +148,7 @@ export default function CartPage() {
                 </div>
               ))}
 
-              {/* Clear Cart Button - button already has cursor pointer */}
+              {/* Clear Cart Button */}
               <div className="p-4 bg-gray-50 dark:bg-gray-700">
                 <button
                   onClick={clearCart}
@@ -155,10 +166,13 @@ export default function CartPage() {
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 Order Summary
               </h2>
-              
+
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                  <span>Subtotal ({items.reduce((acc, i) => acc + i.quantity, 0)} items)</span>
+                  <span>
+                    Subtotal ({items.reduce((acc, i) => acc + i.quantity, 0)}{" "}
+                    items)
+                  </span>
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
@@ -173,15 +187,14 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Checkout button - button already has cursor pointer */}
-              <button
-                className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-hover transition-colors cursor-pointer"
-                onClick={() => alert("Checkout - Coming Soon!")}
-              >
-                Proceed to Checkout
-              </button>
+              {/* Checkout button */}
+              <Link href="/checkout" className="block">
+                <button className="w-full py-3 bg-primary text-white rounded-sm font-semibold hover:bg-primary-hover transition-colors cursor-pointer">
+                  Proceed to Checkout
+                </button>
+              </Link>
 
-              {/* Continue Shopping link - anchor already has cursor pointer */}
+              {/* Continue Shopping link */}
               <Link
                 href="/"
                 className="block text-center text-sm text-primary hover:underline mt-4"
