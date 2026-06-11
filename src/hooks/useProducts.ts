@@ -1,20 +1,10 @@
-// Product Fetching Hook
-// Custom hook that encapsulates product fetching logic
-// This hook will work EXACTLY the same when switch to the backend
+// Role: Manages product fetching with pagination support
 
 import { useState, useEffect } from "react";
 import { productService } from "@/services/product-service";
 import type { Product, ProductsResponse } from "@/types/product";
 
-interface UseProductsReturn {
-  products: Product[];
-  loading: boolean;
-  error: string | null;
-  total: number;
-  refetch: () => void;
-}
-
-export function useProducts(limit = 12): UseProductsReturn {
+export function useProducts(limit = 12, skip = 0) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +14,7 @@ export function useProducts(limit = 12): UseProductsReturn {
     setLoading(true);
     setError(null);
     try {
-      const data: ProductsResponse = await productService.getAllProducts(limit);
+      const data: ProductsResponse = await productService.getAllProducts(limit, skip);
       setProducts(data.products);
       setTotal(data.total);
     } catch (err) {
@@ -36,7 +26,7 @@ export function useProducts(limit = 12): UseProductsReturn {
 
   useEffect(() => {
     fetchProducts();
-  }, [limit]);
+  }, [limit, skip]);
 
   return { products, loading, error, total, refetch: fetchProducts };
 }

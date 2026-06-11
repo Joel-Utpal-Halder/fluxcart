@@ -1,4 +1,4 @@
-// Role: Homepage displaying product grid with category filtering and sorting
+// Role: Homepage displaying product grid with category filtering, sorting, and pagination
 
 "use client";
 
@@ -7,6 +7,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { CategoryFilter } from "@/components/ui/CategoryFilter";
 import { SortingDropdown, sortOptions, type SortOption } from "@/components/ui/SortingDropdown";
+import { Pagination } from "@/components/ui/Pagination";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
@@ -17,9 +18,12 @@ export default function Home() {
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [currentSort, setCurrentSort] = useState<SortOption>(sortOptions[0]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 9;
   
-  // Fetch all products (used when no category selected)
-  const { products, loading, error, total } = useProducts(100); // Fetch more for sorting
+  // Fetch all products with pagination
+  const { products, loading, error, total } = useProducts(productsPerPage, (currentPage - 1) * productsPerPage);
+  const totalPages = Math.ceil(total / productsPerPage);
 
   /* ===== FETCH PRODUCTS WHEN CATEGORY CHANGES ===== */
   useEffect(() => {
@@ -41,6 +45,11 @@ export default function Home() {
     fetchCategoryProducts();
   }, [selectedCategory]);
 
+  /* ===== RESET PAGE WHEN CATEGORY CHANGES ===== */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
   /* ===== DETERMINE WHICH PRODUCTS TO DISPLAY ===== */
   let displayProducts = selectedCategory ? categoryProducts : products;
   const isLoading = selectedCategory ? categoryLoading : loading;
@@ -51,6 +60,12 @@ export default function Home() {
   /* ===== HANDLE SORT CHANGE ===== */
   const handleSortChange = (option: SortOption) => {
     setCurrentSort(option);
+  };
+
+  /* ===== HANDLE PAGE CHANGE ===== */
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -91,13 +106,13 @@ export default function Home() {
 
             {/* Products Count */}
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Showing {sortedProducts.length} products
+              Showing {sortedProducts.length} products {!selectedCategory && `(Page ${currentPage} of ${totalPages})`}
             </div>
 
             {/* Loading State */}
             {isLoading && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(8)].map((_, i) => (
+                {[...Array(9)].map((_, i) => (
                   <div key={i} className="animate-pulse">
                     <div className="bg-gray-200 dark:bg-gray-700 h-64 rounded-lg mb-4"></div>
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
@@ -137,6 +152,15 @@ export default function Home() {
                   </div>
                 )}
               </>
+            )}
+
+            {/* Pagination */}
+            {!isLoading && !error && !selectedCategory && totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
             )}
           </div>
         </div>
