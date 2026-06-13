@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Heart } from "lucide-react";
 import { AddToCartButton } from "./AddToCartButton";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { useToastStore } from "@/stores/toast-store";
 import type { Product } from "@/types/product";
 
 interface ProductCardProps {
@@ -15,7 +16,19 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.images?.[0] || product.thumbnail;
   const { isInWishlist, toggleItem } = useWishlistStore();
+  const { showToast } = useToastStore();
   const isWished = isInWishlist(product.id);
+
+  /* ===== Handle Wishlist Toggle with Toast ===== */
+  const handleWishlistToggle = () => {
+    toggleItem(product);
+    
+    if (!isWished) {
+      showToast(`${product.title} added to wishlist!`, "wishlist");
+    } else {
+      showToast(`${product.title} removed from wishlist`, "wishlist");
+    }
+  };
 
   return (
     <div className="group relative bg-white dark:bg-gray-800 rounded-sm shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -60,13 +73,13 @@ export function ProductCard({ product }: ProductCardProps) {
           </span>
           
           <div className="flex gap-2">
-            {/* Wishlist Button */}
+            {/* Wishlist Button with Toast */}
             <button
-              onClick={() => toggleItem(product)}
+              onClick={handleWishlistToggle}
               className={`p-2 rounded-sm transition-all duration-200 cursor-pointer ${
                 isWished
                   ? "bg-red-500 text-white hover:bg-red-600"
-                  : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-red-500 hover:text-white"
               }`}
               aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
             >
