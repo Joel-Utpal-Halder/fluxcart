@@ -1,4 +1,4 @@
-// Role: Checkout page with form for shipping details and order summary
+// Role: Checkout page with form for shipping details, order summary, and toast notifications
 
 "use client";
 
@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Truck, MapPin, Phone, Mail, User } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
+import { useToastStore } from "@/stores/toast-store";
 import Container from "@/components/layout/Container";
 
 interface FormData {
@@ -26,6 +27,9 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const totalPrice = getTotalPrice();
+  
+  /* ===== TOAST STORE ===== */
+  const { showToast } = useToastStore();
   
   /* ===== FORM STATE ===== */
   const [formData, setFormData] = useState<FormData>({
@@ -57,7 +61,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-sm hover:bg-primary-hover transition-colors"
           >
             Continue Shopping
           </Link>
@@ -72,16 +76,17 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  /* ===== HANDLE FORM SUBMISSION ===== */
+  /* ===== HANDLE FORM SUBMISSION WITH TOAST ===== */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call (3 seconds delay)
+    // Action: Simulate API call (3 seconds delay)
     await new Promise((resolve) => setTimeout(resolve, 3000));
     
-    // Clear cart and show success
+    // Action: Clear cart and show success toast
     clearCart();
+    showToast("Order placed successfully! 🎉", "success");
     setOrderComplete(true);
     setIsSubmitting(false);
   };
@@ -105,7 +110,7 @@ export default function CheckoutPage() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-sm hover:bg-primary-hover transition-colors"
           >
             Continue Shopping
           </Link>
@@ -136,7 +141,7 @@ export default function CheckoutPage() {
           <div className="flex-1">
             <form onSubmit={handleSubmit} className="space-y-8">
               {/* Shipping Information Section */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-sm shadow-md p-6">
                 <div className="flex items-center gap-2 mb-6">
                   <Truck className="w-5 h-5 text-primary" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -158,7 +163,7 @@ export default function CheckoutPage() {
                         value={formData.firstName}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                         placeholder="John"
                       />
                     </div>
@@ -177,7 +182,7 @@ export default function CheckoutPage() {
                         value={formData.lastName}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                         placeholder="Doe"
                       />
                     </div>
@@ -196,7 +201,7 @@ export default function CheckoutPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -215,7 +220,7 @@ export default function CheckoutPage() {
                         value={formData.phone}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                         placeholder="+880 1234 567890"
                       />
                     </div>
@@ -234,7 +239,7 @@ export default function CheckoutPage() {
                         value={formData.address}
                         onChange={handleChange}
                         required
-                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                        className="w-full pl-9 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                         placeholder="123 Main Street"
                       />
                     </div>
@@ -251,7 +256,7 @@ export default function CheckoutPage() {
                       value={formData.city}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                       placeholder="Dhaka"
                     />
                   </div>
@@ -267,7 +272,7 @@ export default function CheckoutPage() {
                       value={formData.state}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                       placeholder="Dhaka"
                     />
                   </div>
@@ -283,7 +288,7 @@ export default function CheckoutPage() {
                       value={formData.zipCode}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors"
                       placeholder="1205"
                     />
                   </div>
@@ -298,7 +303,7 @@ export default function CheckoutPage() {
                       value={formData.country}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors cursor-pointer"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary transition-colors cursor-pointer"
                     >
                       <option value="Bangladesh">Bangladesh</option>
                       <option value="India">India</option>
@@ -312,7 +317,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Payment Method Section */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-sm shadow-md p-6">
                 <div className="flex items-center gap-2 mb-6">
                   <CreditCard className="w-5 h-5 text-primary" />
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -350,7 +355,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-3 bg-primary text-white rounded-lg font-semibold transition-colors cursor-pointer ${
+                className={`w-full py-3 bg-primary text-white rounded-sm font-semibold transition-colors cursor-pointer ${
                   isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-primary-hover"
                 }`}
               >
@@ -361,7 +366,7 @@ export default function CheckoutPage() {
 
           {/* ===== ORDER SUMMARY SIDEBAR ===== */}
           <div className="lg:w-96">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sticky top-24">
+            <div className="bg-white dark:bg-gray-800 rounded-sm shadow-md p-6 sticky top-24">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 Order Summary
               </h2>
@@ -373,7 +378,7 @@ export default function CheckoutPage() {
                     <img
                       src={item.images?.[0] || item.thumbnail}
                       alt={item.title}
-                      className="w-12 h-12 object-cover rounded"
+                      className="w-12 h-12 object-cover rounded-sm"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
