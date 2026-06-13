@@ -1,10 +1,11 @@
-// Role: Displays single product with image, title, price, rating, wishlist, and add-to-cart
+// Role: Displays single product with image, title, price, rating, wishlist, and cart controls
 
 "use client";
 
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Minus, Plus } from "lucide-react";
 import { AddToCartButton } from "./AddToCartButton";
+import { useCartStore } from "@/stores/cart-store";
 import { useWishlistStore } from "@/stores/wishlist-store";
 import { useToastStore } from "@/stores/toast-store";
 import type { Product } from "@/types/product";
@@ -15,19 +16,41 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.images?.[0] || product.thumbnail;
+  
+  /* ===== STORES ===== */
+  const { items, updateQuantity, removeItem } = useCartStore();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { showToast } = useToastStore();
+  
+  /* ===== CART STATE ===== */
+  const cartItem = items.find((item) => item.id === product.id);
+  const quantity = cartItem?.quantity || 0;
   const isWished = isInWishlist(product.id);
 
-  /* ===== Handle Wishlist Toggle with Toast ===== */
+  /* ===== HANDLE WISHLIST TOGGLE ===== */
   const handleWishlistToggle = () => {
     toggleItem(product);
-    
     if (!isWished) {
       showToast(`${product.title} added to wishlist!`, "wishlist");
     } else {
       showToast(`${product.title} removed from wishlist`, "wishlist");
     }
+  };
+
+  /* ===== HANDLE DECREASE QUANTITY ===== */
+  const handleDecrease = () => {
+    if (quantity === 1) {
+      removeItem(product.id);
+      showToast(`${product.title} removed from cart`, "cart");
+    } else {
+      updateQuantity(product.id, quantity - 1);
+    }
+  };
+
+  /* ===== HANDLE INCREASE QUANTITY ===== */
+  const handleIncrease = () => {
+    updateQuantity(product.id, quantity + 1);
+    showToast(`${product.title} added to cart!`, "cart");
   };
 
   return (
@@ -72,8 +95,34 @@ export function ProductCard({ product }: ProductCardProps) {
             ${product.price.toFixed(2)}
           </span>
           
-          <div className="flex gap-2">
-            {/* Wishlist Button with Toast */}
+          <div className="flex items-center gap-2">
+            {/* Quantity Controls (only show if item in cart) */}
+            {quantity > 0 && (
+              <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-sm">
+                <button
+                  onClick={handleDecrease}
+                  className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-sm transition-colors cursor-pointer"
+                  aria-label="Decrease quantity"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="w-6 text-center text-sm font-semibold">{quantity}</span>
+                <button
+                  onClick={handleIncrease}
+                  className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-sm transition-colors cursor-pointer"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+            
+            {/* Add to Cart Button (only show if quantity is 0) */}
+            {quantity === 0 && (
+              <AddToCartButton product={product} variant="default" />
+            )}
+            
+            {/* Wishlist Button */}
             <button
               onClick={handleWishlistToggle}
               className={`p-2 rounded-sm transition-all duration-200 cursor-pointer ${
@@ -85,9 +134,6 @@ export function ProductCard({ product }: ProductCardProps) {
             >
               <Heart className={`w-4 h-4 ${isWished ? "fill-current" : ""}`} />
             </button>
-            
-            {/* Add to Cart Button */}
-            <AddToCartButton product={product} variant="default" />
           </div>
         </div>
       </div>
