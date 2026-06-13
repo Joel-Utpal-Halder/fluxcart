@@ -1,4 +1,4 @@
-// Role: Display complete product details with image gallery, description, quantity selection, and wishlist
+// Role: Display complete product details with image gallery, description, quantity selection, wishlist, and toast notifications
 
 "use client";
 
@@ -8,6 +8,7 @@ import Link from "next/link";
 import { ArrowLeft, Star, ShoppingBag, Heart } from "lucide-react";
 import { AddToCartButton } from "@/components/ui/AddToCartButton";
 import { useWishlistStore } from "@/stores/wishlist-store";
+import { useToastStore } from "@/stores/toast-store";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
@@ -23,6 +24,9 @@ export default function ProductDetailPage() {
   /* ===== WISHLIST STORE ===== */
   const { isInWishlist, toggleItem } = useWishlistStore();
   const isWished = product ? isInWishlist(product.id) : false;
+  
+  /* ===== TOAST STORE ===== */
+  const { showToast } = useToastStore();
 
   /* ===== FETCH PRODUCT ON PAGE LOAD ===== */
   useEffect(() => {
@@ -47,6 +51,19 @@ export default function ProductDetailPage() {
 
     fetchProduct();
   }, [id]);
+
+  /* ===== HANDLE WISHLIST TOGGLE WITH TOAST ===== */
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    
+    toggleItem(product);
+    
+    if (!isWished) {
+      showToast(`${product.title} added to wishlist!`, "wishlist");
+    } else {
+      showToast(`${product.title} removed from wishlist`, "wishlist");
+    }
+  };
 
   /* ===== LOADING STATE ===== */
   if (loading) {
@@ -191,9 +208,9 @@ export default function ProductDetailPage() {
             {/* Action Buttons Section: Wishlist + Add to Cart */}
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <div className="flex flex-col sm:flex-row gap-4">
-                {/* Wishlist Button */}
+                {/* Wishlist Button with Toast */}
                 <button
-                  onClick={() => toggleItem(product)}
+                  onClick={handleWishlistToggle}
                   className={`flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 cursor-pointer ${
                     isWished
                       ? "bg-red-500 text-white hover:bg-red-600"
