@@ -1,0 +1,15 @@
+# robots.txt for FluxCart
+# https://fluxcart.com/robots.txt
+
+# Allow all search engines to crawl
+User-agent: *
+Allow: /
+
+# Block user-specific and sensitive pages from search results
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /wishlist/
+Disallow: /api/
+
+# Tell search engines where to find the sitemap
+Sitemap: https://fluxcart.com/sitemap.xml
