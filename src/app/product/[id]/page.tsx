@@ -1,4 +1,4 @@
-// Role: Display complete product details with image gallery, description, quantity selection, wishlist, and toast notifications
+// Role: Display complete product details with image gallery, description, quantity selection, wishlist, toast notifications, and SEO
 
 "use client";
 
@@ -12,6 +12,42 @@ import { useToastStore } from "@/stores/toast-store";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
+
+/* ===== SEO: GENERATE METADATA FOR DYNAMIC PRODUCT PAGES ===== */
+// This runs on the server to generate meta tags before page renders
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  try {
+    const productId = parseInt(params.id);
+    const product = await productService.getProductById(productId);
+    
+    return {
+      title: `${product.title} | FluxCart`,
+      description: product.description.substring(0, 160),
+      keywords: [product.category, product.title, "buy online", "ecommerce", "shop"],
+      openGraph: {
+        title: product.title,
+        description: product.description.substring(0, 160),
+        images: [product.images?.[0] || product.thumbnail],
+        type: "product",
+        url: `https://fluxcart.com/product/${product.id}`,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: product.title,
+        description: product.description.substring(0, 160),
+        images: [product.images?.[0] || product.thumbnail],
+      },
+      alternates: {
+        canonical: `https://fluxcart.com/product/${product.id}`,
+      },
+    };
+  } catch (error) {
+    return {
+      title: "Product Not Found | FluxCart",
+      description: "The requested product could not be found. Browse our collection for amazing deals.",
+    };
+  }
+}
 
 export default function ProductDetailPage() {
   /* ===== STATE DECLARATIONS ===== */
@@ -228,6 +264,39 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* ===== JSON-LD STRUCTURED DATA FOR SEO ===== */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.title,
+            description: product.description,
+            image: product.images?.[0] || product.thumbnail,
+            sku: product.id.toString(),
+            brand: {
+              "@type": "Brand",
+              name: product.category,
+            },
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "USD",
+              availability: product.stock > 0 
+                ? "https://schema.org/InStock" 
+                : "https://schema.org/OutOfStock",
+              url: `https://fluxcart.com/product/${product.id}`,
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.rating.rate,
+              reviewCount: product.rating.count,
+            },
+          }),
+        }}
+      />
     </Container>
   );
 }
