@@ -1,8 +1,9 @@
-// Role: Displays single product with image, title, price, rating, wishlist, and cart controls
+// Role: Displays single product with image, title, price, rating, wishlist, and cart controls with animations
 
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Heart, Minus, Plus } from "lucide-react";
 import { AddToCartButton } from "./AddToCartButton";
 import { useCartStore } from "@/stores/cart-store";
@@ -54,18 +55,30 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-white dark:bg-gray-800 rounded-sm shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <motion.div
+      whileHover={{ scale: 1.02, y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2 }}
+      className="group relative bg-white dark:bg-gray-800 rounded-sm shadow-md overflow-hidden"
+    >
       {/* Image Container */}
       <Link href={`/product/${product.id}`} className="block relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-700 cursor-pointer">
-        <img
+        <motion.img
           src={imageUrl}
           alt={product.title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.08 }}
+          transition={{ duration: 0.3 }}
         />
       </Link>
 
       {/* Content */}
-      <div className="p-4">
+      <motion.div 
+        className="p-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.3 }}
+      >
         {/* Category */}
         <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider">
           {product.category}
@@ -98,23 +111,29 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex items-center gap-2">
             {/* Quantity Controls (only show if item in cart) */}
             {quantity > 0 && (
-              <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-sm">
-                <button
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-sm"
+              >
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
                   onClick={handleDecrease}
                   className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-l-sm transition-colors cursor-pointer"
                   aria-label="Decrease quantity"
                 >
                   <Minus className="w-3 h-3" />
-                </button>
+                </motion.button>
                 <span className="w-6 text-center text-sm font-semibold">{quantity}</span>
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
                   onClick={handleIncrease}
                   className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-r-sm transition-colors cursor-pointer"
                   aria-label="Increase quantity"
                 >
                   <Plus className="w-3 h-3" />
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             )}
             
             {/* Add to Cart Button (only show if quantity is 0) */}
@@ -123,7 +142,9 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
             
             {/* Wishlist Button */}
-            <button
+            <motion.button
+              whileTap={{ scale: 0.85 }}
+              whileHover={{ scale: 1.1 }}
               onClick={handleWishlistToggle}
               className={`p-2 rounded-sm transition-all duration-200 cursor-pointer ${
                 isWished
@@ -133,10 +154,10 @@ export function ProductCard({ product }: ProductCardProps) {
               aria-label={isWished ? "Remove from wishlist" : "Add to wishlist"}
             >
               <Heart className={`w-4 h-4 ${isWished ? "fill-current" : ""}`} />
-            </button>
+            </motion.button>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
