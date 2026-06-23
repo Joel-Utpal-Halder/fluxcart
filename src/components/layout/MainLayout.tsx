@@ -1,6 +1,8 @@
-// File: src/components/layout/MainLayout.tsx
-// Role: Reusable page wrapper with Navbar, Footer, and Toast notifications
+// Role: Reusable page wrapper with Navbar, Footer, Toast notifications, and page transitions
 
+"use client";
+
+import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Container from "./Container";
@@ -16,11 +18,17 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <Navbar />
       <main className="flex-grow">
         <Container>
-          {children}
+          {/* Page transition animation */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            {children}
+          </motion.div>
         </Container>
       </main>
       <Footer />
-      {/* Toast notifications container */}
       <ToastContainer />
     </div>
   );
