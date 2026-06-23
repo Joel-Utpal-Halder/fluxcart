@@ -1,6 +1,6 @@
-// Role: Root layout with SEO metadata, theme support, and hydration fix
+// Role: Root layout with SEO metadata, viewport configuration, theme support, and hydration fix
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 /* ===== SEO METADATA ===== */
 export const metadata: Metadata = {
   title: {
-    default: "FluxCart",
+    default: "FluxCart - Modern E-Commerce Platform",
     template: "%s | FluxCart"
   },
   description: "Discover amazing products at unbeatable prices. Shop the latest trends in beauty, fragrances, furniture, groceries and more with fast shipping worldwide.",
@@ -58,15 +58,15 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
   manifest: "/manifest.json",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
-  verification: {
-    google: "your-google-verification-code", // Replace with actual code
-  },
   category: "ecommerce",
+};
+
+/* ===== VIEWPORT CONFIGURATION ===== */
+// Moved from metadata to separate export (Next.js 15+ requirement)
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
