@@ -3,10 +3,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { useProducts } from "@/hooks/useProducts";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { CategoryFilter } from "@/components/ui/CategoryFilter";
-import { SortingDropdown, sortOptions, type SortOption } from "@/components/ui/SortingDropdown";
+import {
+  SortingDropdown,
+  sortOptions,
+  type SortOption,
+} from "@/components/ui/SortingDropdown";
 import { Pagination } from "@/components/ui/Pagination";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
@@ -20,9 +25,12 @@ export default function Home() {
   const [currentSort, setCurrentSort] = useState<SortOption>(sortOptions[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 9;
-  
+
   // Fetch all products with pagination
-  const { products, loading, error, total } = useProducts(productsPerPage, (currentPage - 1) * productsPerPage);
+  const { products, loading, error, total } = useProducts(
+    productsPerPage,
+    (currentPage - 1) * productsPerPage,
+  );
   const totalPages = Math.ceil(total / productsPerPage);
 
   /* ===== FETCH PRODUCTS WHEN CATEGORY CHANGES ===== */
@@ -31,7 +39,8 @@ export default function Home() {
       if (selectedCategory) {
         setCategoryLoading(true);
         try {
-          const data = await productService.getProductsByCategory(selectedCategory);
+          const data =
+            await productService.getProductsByCategory(selectedCategory);
           setCategoryProducts(data.products);
         } catch (error) {
           console.error("Failed to fetch category products:", error);
@@ -76,14 +85,14 @@ export default function Home() {
           Welcome to <span className="text-primary">FluxCart</span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Discover amazing products at unbeatable prices. Shop the latest trends with fast shipping worldwide.
+          Discover amazing products at unbeatable prices. Shop the latest trends
+          with fast shipping worldwide.
         </p>
       </section>
 
       {/* Products Section with Sidebar */}
       <section className="py-8">
         <div className="flex flex-col md:flex-row gap-8">
-          
           {/* Sidebar: Category Filter */}
           <div className="md:w-64 flex-shrink-0">
             <CategoryFilter
@@ -99,14 +108,18 @@ export default function Home() {
               <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
                 {selectedCategory ? `${selectedCategory}` : "Featured Products"}
               </h2>
-              
+
               {/* Sorting Dropdown */}
-              <SortingDropdown onSort={handleSortChange} currentSort={currentSort} />
+              <SortingDropdown
+                onSort={handleSortChange}
+                currentSort={currentSort}
+              />
             </div>
 
             {/* Products Count */}
             <div className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Showing {sortedProducts.length} products {!selectedCategory && `(Page ${currentPage} of ${totalPages})`}
+              Showing {sortedProducts.length} products{" "}
+              {!selectedCategory && `(Page ${currentPage} of ${totalPages})`}
             </div>
 
             {/* Loading State */}
@@ -145,11 +158,33 @@ export default function Home() {
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      visible: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.08,
+                        },
+                      },
+                    }}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
                     {sortedProducts.map((product) => (
-                      <ProductCard key={product.id} product={product} />
+                      <motion.div
+                        key={product.id}
+                        variants={{
+                          hidden: { opacity: 0, y: 30 },
+                          visible: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <ProductCard product={product} />
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </>
             )}
