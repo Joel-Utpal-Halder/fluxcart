@@ -1,10 +1,12 @@
-// Role: Display complete product details with image gallery, description, quantity selection, wishlist, toast notifications, and SEO
+// File: src/app/product/[id]/page.tsx
+// Role: Display complete product details with image gallery, description, quantity selection, wishlist, toast notifications, SEO, and animations
 
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowLeft, Star, ShoppingBag, Heart } from "lucide-react";
 import { AddToCartButton } from "@/components/ui/AddToCartButton";
 import { useWishlistStore } from "@/stores/wishlist-store";
@@ -12,42 +14,6 @@ import { useToastStore } from "@/stores/toast-store";
 import Container from "@/components/layout/Container";
 import { productService } from "@/services/product-service";
 import type { Product } from "@/types/product";
-
-/* ===== SEO: GENERATE METADATA FOR DYNAMIC PRODUCT PAGES ===== */
-// This runs on the server to generate meta tags before page renders
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  try {
-    const productId = parseInt(params.id);
-    const product = await productService.getProductById(productId);
-    
-    return {
-      title: `${product.title} | FluxCart`,
-      description: product.description.substring(0, 160),
-      keywords: [product.category, product.title, "buy online", "ecommerce", "shop"],
-      openGraph: {
-        title: product.title,
-        description: product.description.substring(0, 160),
-        images: [product.images?.[0] || product.thumbnail],
-        type: "product",
-        url: `https://fluxcart.com/product/${product.id}`,
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: product.title,
-        description: product.description.substring(0, 160),
-        images: [product.images?.[0] || product.thumbnail],
-      },
-      alternates: {
-        canonical: `https://fluxcart.com/product/${product.id}`,
-      },
-    };
-  } catch (error) {
-    return {
-      title: "Product Not Found | FluxCart",
-      description: "The requested product could not be found. Browse our collection for amazing deals.",
-    };
-  }
-}
 
 export default function ProductDetailPage() {
   /* ===== STATE DECLARATIONS ===== */
@@ -147,19 +113,29 @@ export default function ProductDetailPage() {
     <Container>
       <div className="py-8">
         {/* Back Button */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors mb-6 cursor-pointer"
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Continue Shopping</span>
-        </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors mb-6 cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Continue Shopping</span>
+          </Link>
+        </motion.div>
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           
           {/* ===== LEFT COLUMN: IMAGE GALLERY ===== */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {/* Main Image */}
             <div className="bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden mb-4">
               <img
@@ -171,7 +147,12 @@ export default function ProductDetailPage() {
             
             {/* Thumbnail Gallery */}
             {product.images && product.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
+                className="flex gap-3 overflow-x-auto pb-2"
+              >
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
@@ -189,12 +170,16 @@ export default function ProductDetailPage() {
                     />
                   </button>
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
 
           {/* ===== RIGHT COLUMN: PRODUCT INFO ===== */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+          >
             {/* Category Badge */}
             <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400 rounded-sm mb-4">
               {product.category}
@@ -245,7 +230,10 @@ export default function ProductDetailPage() {
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 {/* Wishlist Button with Toast */}
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   onClick={handleWishlistToggle}
                   className={`flex items-center justify-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 cursor-pointer ${
                     isWished
@@ -255,13 +243,13 @@ export default function ProductDetailPage() {
                 >
                   <Heart className={`w-5 h-5 ${isWished ? "fill-current" : ""}`} />
                   <span>{isWished ? "Remove from Wishlist" : "Add to Wishlist"}</span>
-                </button>
+                </motion.button>
                 
                 {/* Add to Cart Button */}
                 <AddToCartButton product={product} variant="full" />
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
