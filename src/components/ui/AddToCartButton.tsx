@@ -1,9 +1,10 @@
 // File: src/components/ui/AddToCartButton.tsx
-// Role: A reusable button that adds products to cart with visual feedback and toast notifications
+// Role: A reusable button that adds products to cart with visual feedback, toast notifications, and spring animations
 
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ShoppingCart, Check, Minus, Plus } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { useToastStore } from "@/stores/toast-store";
@@ -33,11 +34,9 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
   /* ===== Handle Decrease Quantity ===== */
   const handleDecrease = () => {
     if (quantity === 1) {
-      // Action: Remove item and show toast
       removeItem(product.id);
       showToast(`${product.title} removed from cart`, "cart");
     } else {
-      // Action: Decrease quantity
       updateQuantity(product.id, quantity - 1);
     }
   };
@@ -51,7 +50,10 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
   /* ===== Variant 1: Icon Only (for product cards) ===== */
   if (variant === "default") {
     return (
-      <button
+      <motion.button
+        whileTap={{ scale: 0.85 }}
+        whileHover={{ scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
         onClick={handleAdd}
         className={`p-2 rounded-full transition-all duration-200 cursor-pointer ${
           isAdded
@@ -61,7 +63,7 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
         aria-label="Add to cart"
       >
         {isAdded ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
-      </button>
+      </motion.button>
     );
   }
 
@@ -70,27 +72,38 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
     <div className="flex items-center gap-3">
       {/* Quantity Selector */}
       {quantity > 0 && (
-        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-sm">
-          <button
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-sm"
+        >
+          <motion.button
+            whileTap={{ scale: 0.85 }}
             onClick={handleDecrease}
             className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-l-sm transition-colors cursor-pointer"
             aria-label="Decrease quantity"
           >
             <Minus className="w-4 h-4" />
-          </button>
+          </motion.button>
           <span className="w-8 text-center font-semibold">{quantity}</span>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.85 }}
             onClick={handleIncrease}
             className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-r-sm transition-colors cursor-pointer"
             aria-label="Increase quantity"
           >
             <Plus className="w-4 h-4" />
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       )}
       
       {/* Add to Cart Button */}
-      <button
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
         onClick={handleAdd}
         className={`flex items-center gap-2 px-6 py-3 rounded-sm font-semibold transition-all duration-200 cursor-pointer ${
           isAdded
@@ -109,7 +122,7 @@ export function AddToCartButton({ product, variant = "default" }: AddToCartButto
             <span>{quantity > 0 ? "Add More" : "Add to Cart"}</span>
           </>
         )}
-      </button>
+      </motion.button>
     </div>
   );
 }
