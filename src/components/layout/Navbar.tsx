@@ -12,16 +12,16 @@ import { SearchBar } from "@/components/ui/SearchBar";
 
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
-  
+
   /* ===== CART STORE ===== */
   // FIX: Subscribe to items array directly to trigger re-renders
   const cartItems = useCartStore((state) => state.items);
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  
+
   /* ===== WISHLIST STORE ===== */
   const wishlistItems = useWishlistStore((state) => state.items);
   const wishlistCount = wishlistItems.length;
-  
+
   /* ===== THEME STORE ===== */
   const { theme, toggleTheme, initTheme } = useThemeStore();
 
@@ -39,7 +39,9 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-2xl font-bold text-primary">Flux</span>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">Cart</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+                Cart
+              </span>
             </Link>
           </div>
         </div>
@@ -52,25 +54,32 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          
           {/* Logo / Brand */}
           <Link href="/" className="flex items-center space-x-2 cursor-pointer">
             <span className="text-2xl font-bold text-primary">Flux</span>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">Cart</span>
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              Cart
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
+            <Link
+              href="/"
+              className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer"
+            >
               Home
             </Link>
-            <Link href="/products" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
-              Products
-            </Link>
-            <Link href="/wishlist" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
+            <Link
+              href="/wishlist"
+              className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer"
+            >
               Wishlist
             </Link>
-            <Link href="/cart" className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer">
+            <Link
+              href="/cart"
+              className="text-gray-700 dark:text-gray-200 hover:text-primary transition-colors cursor-pointer"
+            >
               Cart
             </Link>
           </div>
@@ -82,7 +91,6 @@ export default function Navbar() {
 
           {/* Right Side: Wishlist + Cart + Dark Mode Toggle */}
           <div className="flex items-center space-x-4">
-            
             {/* Wishlist Icon with Badge */}
             <Link href="/wishlist" className="relative cursor-pointer">
               <div className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-primary hover:text-white transition-colors group">
