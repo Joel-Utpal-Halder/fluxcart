@@ -17,12 +17,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.images?.[0] || product.thumbnail;
-  
+
   /* ===== STORES ===== */
   const { items, updateQuantity, removeItem } = useCartStore();
   const { isInWishlist, toggleItem } = useWishlistStore();
   const { showToast } = useToastStore();
-  
+
   /* ===== CART STATE ===== */
   const cartItem = items.find((item) => item.id === product.id);
   const quantity = cartItem?.quantity || 0;
@@ -62,18 +62,23 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group relative bg-white dark:bg-gray-800 rounded-sm shadow-md overflow-hidden"
     >
       {/* Image Container */}
-      <Link href={`/product/${product.id}`} className="block relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-700 cursor-pointer">
-        <motion.img
-          src={imageUrl}
-          alt={product.title}
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.08 }}
-          transition={{ duration: 0.3 }}
-        />
+      <Link
+        href={`/product/${product.id}`}
+        className="block relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-700 cursor-pointer"
+      >
+        <div className="flex items-center justify-center w-full h-full">
+          <motion.img
+            src={imageUrl}
+            alt={product.title}
+            className="w-54 h-54 object-cover object-center"
+            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
       </Link>
 
       {/* Content */}
-      <motion.div 
+      <motion.div
         className="p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -107,11 +112,11 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="text-2xl font-bold text-gray-900 dark:text-white">
             ${product.price.toFixed(2)}
           </span>
-          
+
           <div className="flex items-center gap-2">
             {/* Quantity Controls (only show if item in cart) */}
             {quantity > 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-sm"
@@ -124,7 +129,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 >
                   <Minus className="w-3 h-3" />
                 </motion.button>
-                <span className="w-6 text-center text-sm font-semibold">{quantity}</span>
+                <span className="w-6 text-center text-sm font-semibold">
+                  {quantity}
+                </span>
                 <motion.button
                   whileTap={{ scale: 0.85 }}
                   onClick={handleIncrease}
@@ -135,12 +142,12 @@ export function ProductCard({ product }: ProductCardProps) {
                 </motion.button>
               </motion.div>
             )}
-            
+
             {/* Add to Cart Button (only show if quantity is 0) */}
             {quantity === 0 && (
               <AddToCartButton product={product} variant="default" />
             )}
-            
+
             {/* Wishlist Button */}
             <motion.button
               whileTap={{ scale: 0.85 }}
