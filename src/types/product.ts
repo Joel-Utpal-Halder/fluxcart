@@ -1,13 +1,12 @@
-// File: src/types/product.ts
-
+// Data Blueprint: Defines shape of product (id, name, price, images, rating)
 export interface Product {
   id: number;
   title: string;
   price: number;
   description: string;
   category: string;
-  images: string[];  // Changed from 'image' to 'images' (array)
-  thumbnail: string;  // Added thumbnail
+  images: string[];
+  thumbnail: string;
   rating: {
     rate: number;
     count: number;
