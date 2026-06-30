@@ -1,3 +1,5 @@
+// Next.js Settings:	Allows external images from DummyJSON
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
