@@ -1,11 +1,17 @@
-// Role: Root layout with SEO metadata, viewport configuration, theme support, and hydration fix
+// File: src/app/layout.tsx
+// Role: Root layout with SEO metadata, viewport configuration, theme support, and Google Fonts
 
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Baloo_2 } from "next/font/google";
 import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
+const baloo = Baloo_2({ 
+  subsets: ["latin"], 
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-baloo",
+});
 
 /* ===== SEO METADATA ===== */
 export const metadata: Metadata = {
@@ -62,7 +68,6 @@ export const metadata: Metadata = {
 };
 
 /* ===== VIEWPORT CONFIGURATION ===== */
-// Moved from metadata to separate export (Next.js 15+ requirement)
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -76,7 +81,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${baloo.variable}`}>
         <MainLayout>{children}</MainLayout>
       </body>
     </html>

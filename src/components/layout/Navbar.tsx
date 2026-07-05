@@ -54,12 +54,23 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo / Brand */}
-          <Link href="/" className="flex items-center space-x-2 cursor-pointer">
-            <span className="text-2xl font-bold text-primary">Flux</span>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              Cart
-            </span>
+          {/* Logo / Brand with Stylish Font */}
+          {/* Logo / Brand with Baloo Font */}
+          <Link href="/" className="flex items-center cursor-pointer group">
+            <div className="flex items-baseline">
+              <span
+                className="text-5xl font-bold text-primary"
+                style={{ fontFamily: "var(--font-baloo)" }}
+              >
+                Flux
+              </span>
+              <span
+                className="text-5xl font-bold text-gray-900 dark:text-white"
+                style={{ fontFamily: "var(--font-baloo)" }}
+              >
+                Cart
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation Links */}
