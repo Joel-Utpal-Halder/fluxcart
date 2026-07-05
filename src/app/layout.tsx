@@ -7,8 +7,8 @@ import "./globals.css";
 import MainLayout from "@/components/layout/MainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
-const baloo = Baloo_2({ 
-  subsets: ["latin"], 
+const baloo = Baloo_2({
+  subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
   variable: "--font-baloo",
 });
@@ -17,10 +17,18 @@ const baloo = Baloo_2({
 export const metadata: Metadata = {
   title: {
     default: "FluxCart - Modern E-Commerce Platform",
-    template: "%s | FluxCart"
+    template: "%s | FluxCart",
   },
-  description: "Discover amazing products at unbeatable prices. Shop the latest trends in beauty, fragrances, furniture, groceries and more with fast shipping worldwide.",
-  keywords: ["ecommerce", "online shopping", "fluxcart", "buy products online", "best deals", "shop online"],
+  description:
+    "Discover amazing products at unbeatable prices. Shop the latest trends in beauty, fragrances, furniture, groceries and more with fast shipping worldwide.",
+  keywords: [
+    "ecommerce",
+    "online shopping",
+    "fluxcart",
+    "buy products online",
+    "best deals",
+    "shop online",
+  ],
   authors: [{ name: "FluxCart", url: "https://fluxcart.com" }],
   creator: "FluxCart",
   publisher: "FluxCart",
@@ -37,7 +45,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "FluxCart - Modern E-Commerce Platform",
-    description: "Discover amazing products at unbeatable prices. Shop the latest trends with fast shipping worldwide.",
+    description:
+      "Discover amazing products at unbeatable prices. Shop the latest trends with fast shipping worldwide.",
     url: "https://fluxcart.com",
     siteName: "FluxCart",
     images: [
@@ -54,13 +63,14 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "FluxCart - Modern E-Commerce Platform",
-    description: "Discover amazing products at unbeatable prices. Shop the latest trends with fast shipping worldwide.",
+    description:
+      "Discover amazing products at unbeatable prices. Shop the latest trends with fast shipping worldwide.",
     images: ["https://fluxcart.com/twitter-image.jpg"],
     creator: "@fluxcart",
     site: "@fluxcart",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [{ url: "/favicon.png", type: "image/png" }],
     apple: "/apple-icon.png",
   },
   manifest: "/manifest.json",
