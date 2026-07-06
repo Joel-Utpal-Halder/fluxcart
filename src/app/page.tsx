@@ -82,7 +82,19 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-12 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          Welcome to <span className="text-primary">FluxCart</span>
+          Welcome to{" "}
+          <span
+            className="text-5xl font-bold text-primary"
+            style={{ fontFamily: "var(--font-baloo)" }}
+          >
+            Flux
+          </span>
+          <span
+            className="text-5xl font-bold text-gray-900 dark:text-white"
+            style={{ fontFamily: "var(--font-baloo)" }}
+          >
+            Cart
+          </span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Discover amazing products at unbeatable prices. Shop the latest trends
