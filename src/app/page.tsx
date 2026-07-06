@@ -84,13 +84,13 @@ export default function Home() {
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
           Welcome to{" "}
           <span
-            className="text-5xl font-bold text-primary"
+            className="text-6xl font-bold text-primary"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
             Flux
           </span>
           <span
-            className="text-5xl font-bold text-gray-900 dark:text-white"
+            className="text-6xl font-bold text-gray-900 dark:text-white"
             style={{ fontFamily: "var(--font-baloo)" }}
           >
             Cart

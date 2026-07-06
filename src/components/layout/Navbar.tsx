@@ -59,13 +59,13 @@ export default function Navbar() {
           <Link href="/" className="flex items-center cursor-pointer group">
             <div className="flex items-baseline">
               <span
-                className="text-5xl font-bold text-primary"
+                className="text-4xl font-bold text-primary"
                 style={{ fontFamily: "var(--font-baloo)" }}
               >
                 Flux
               </span>
               <span
-                className="text-5xl font-bold text-gray-900 dark:text-white"
+                className="text-4xl font-bold text-gray-900 dark:text-white"
                 style={{ fontFamily: "var(--font-baloo)" }}
               >
                 Cart
