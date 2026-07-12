@@ -272,7 +272,7 @@ export default function ProductDetailPage() {
               "@type": "Offer",
               price: product.price,
               priceCurrency: "USD",
-              availability: product.stock > 0 
+              availability: (product.stock || 10) > 0 
                 ? "https://schema.org/InStock" 
                 : "https://schema.org/OutOfStock",
               url: `https://fluxcart.com/product/${product.id}`,
