@@ -22,11 +22,11 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
-  
+
   /* ===== WISHLIST STORE ===== */
   const { isInWishlist, toggleItem } = useWishlistStore();
   const isWished = product ? isInWishlist(product.id) : false;
-  
+
   /* ===== TOAST STORE ===== */
   const { showToast } = useToastStore();
 
@@ -35,10 +35,10 @@ export default function ProductDetailPage() {
     // Action: Fetch product details when ID changes
     const fetchProduct = async () => {
       if (!id) return;
-      
+
       setLoading(true);
       setError(null);
-      
+
       try {
         const productId = parseInt(id as string);
         const data = await productService.getProductById(productId);
@@ -57,9 +57,9 @@ export default function ProductDetailPage() {
   /* ===== HANDLE WISHLIST TOGGLE WITH TOAST ===== */
   const handleWishlistToggle = () => {
     if (!product) return;
-    
+
     toggleItem(product);
-    
+
     if (!isWished) {
       showToast(`${product.title} added to wishlist!`, "wishlist");
     } else {
@@ -129,7 +129,6 @@ export default function ProductDetailPage() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          
           {/* ===== LEFT COLUMN: IMAGE GALLERY ===== */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -144,7 +143,7 @@ export default function ProductDetailPage() {
                 className="w-full h-96 object-contain"
               />
             </div>
-            
+
             {/* Thumbnail Gallery */}
             {product.images && product.images.length > 1 && (
               <motion.div
@@ -241,10 +240,14 @@ export default function ProductDetailPage() {
                       : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-red-500 hover:text-white"
                   }`}
                 >
-                  <Heart className={`w-5 h-5 ${isWished ? "fill-current" : ""}`} />
-                  <span>{isWished ? "Remove from Wishlist" : "Add to Wishlist"}</span>
+                  <Heart
+                    className={`w-5 h-5 ${isWished ? "fill-current" : ""}`}
+                  />
+                  <span>
+                    {isWished ? "Remove from Wishlist" : "Add to Wishlist"}
+                  </span>
                 </motion.button>
-                
+
                 {/* Add to Cart Button */}
                 <AddToCartButton product={product} variant="full" />
               </div>
@@ -272,9 +275,10 @@ export default function ProductDetailPage() {
               "@type": "Offer",
               price: product.price,
               priceCurrency: "USD",
-              availability: (product.stock || 10) > 0 
-                ? "https://schema.org/InStock" 
-                : "https://schema.org/OutOfStock",
+              availability:
+                ((product as any).stock || 10) > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
               url: `https://fluxcart.com/product/${product.id}`,
             },
             aggregateRating: {
