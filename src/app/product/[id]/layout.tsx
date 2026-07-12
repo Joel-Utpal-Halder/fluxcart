@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
         title: product.title,
         description: product.description.substring(0, 160),
         images: [product.images?.[0] || product.thumbnail],
-        type: "product",
+        type: "website",  // ← Changed from "product" to "website"
         url: `https://fluxcart.com/product/${product.id}`,
       },
       twitter: {
